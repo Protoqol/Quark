@@ -26,6 +26,7 @@ $quark->addCommands([
 
 try {
     $quark->run();
+
 } catch (Exception $e) {
     return $e;
 }
