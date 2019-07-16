@@ -1,0 +1,21 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Protoqol\Quark\Commands\GenerateDatabaseCommand;
+use Protoqol\Quark\Commands\GenerateTableCommand;
+use Symfony\Component\Console\Application;
+
+$app = new Application('Quark Database');
+
+$app->addCommands([
+    (new GenerateDatabaseCommand()),
+    (new GenerateTableCommand()),
+]);
+
+try {
+    $app->run();
+} catch (Exception $e) {
+    return $e;
+}

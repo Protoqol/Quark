@@ -1,3 +1,5 @@
 source
 .idea
 vendor
+todo.md
+.phpunit.result.cache

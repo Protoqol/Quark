@@ -4,7 +4,7 @@
 
 <p align="center">
     <a href="https://travis-ci.org/Protoqol/Prequel.svg?branch=Dev">
-	    <img src="https://travis-ci.org/Protoqol/Prequel.svg?branch=Dev"/>	
+	    <img src="https://travis-ci.com/QuintenJustus/QuarkDev.svg?token=ZdiYagasyKHEDjbRoVro&branch=master"/>	
     </a>
     <a href="https://packagist.org/packages/protoqol/prequel">
 	    <img src="https://img.shields.io/badge/php-%5E7.2-lightblue.svg"/>	

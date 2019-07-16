@@ -10,11 +10,24 @@
     }
   ],
   "minimum-stability": "beta",
+  "bin": [
+    "bin/Quark"
+  ],
   "require": {
-    "symfony/console": "^4.3"
+    "symfony/console": "^4.3",
+    "symfony/filesystem": "^4.3"
   },
   "require-dev": {
     "phpunit/phpunit": "^7"
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "sort-packages": true
+  },
+  "autoload": {
+    "classmap": [
+      "src/"
+    ]
   },
   "autoload-dev": {
     "psr-4": {
@@ -24,14 +37,28 @@
   "scripts": {
     "test": [
       "phpunit"
+    ],
+    "quark": [
+      "./bin/Quark.php"
+    ],
+    "post-install-cmd": [
+      "composer dump-autoload"
+    ],
+    "post-update-cmd": [
+      "composer dump-autoload"
+    ],
+    "post-package-install": [
+      "composer dump-autoload"
+    ],
+    "post-package-update": [
+      "composer dump-autoload"
+    ],
+    "post-package-uninstall": [
+      "composer dump-autoload"
     ]
   },
   "scripts-descriptions": {
-    "test": "Runs the default PHPUnit test suite configured in phpunit.xml"
-  },
-  "autoload": {
-    "classmap": [
-      "src/"
-    ]
+    "test": "Runs the default PHPUnit test suite configured in phpunit.xml",
+    "quark": "Run Quark."
   }
 }
