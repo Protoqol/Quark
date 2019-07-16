@@ -1,0 +1,14 @@
+{
+    "name": "protoqol/quark",
+    "description": "Flat file database.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Quinten Justus",
+            "email": "quinten@protoqol.xyz"
+        }
+    ],
+    "minimum-stability": "beta",
+    "require": {}
+}
