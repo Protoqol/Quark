@@ -1,5 +1,5 @@
 <div>
-    <img src="./assets/quarkTrans.png"/>
+    <img src="./assets/quarkFull.png"/>
 </div>
 
 # Quark
