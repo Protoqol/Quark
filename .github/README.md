@@ -2,7 +2,6 @@
     <img src="./assets/quarkFull.png"/>
 </div>
 
-# Quark
 <p align="center">
     <a href="https://travis-ci.org/Protoqol/Prequel.svg?branch=Dev">
 	    <img src="https://travis-ci.org/Protoqol/Prequel.svg?branch=Dev"/>	
