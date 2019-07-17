@@ -2,7 +2,9 @@
 
 namespace Protoqol\Quark\Commands;
 
+use Protoqol\Quark\Quark;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -13,11 +15,14 @@ class GenerateDatabaseCommand extends Command
 
     protected function configure()
     {
-        // File name/location/preset?
-        $this->addArgument('directory');
-
-        $this->setDescription('Install Quark database in specified directory.')
-             ->setHelp('quark initialise [tablename]');
+        $this->setDescription('Initialise an empty Quark database with specified name.')
+             ->setHelp('quark initialise')
+             ->setAliases(['quark:initialise'])
+             ->addArgument(
+                 'table',
+                 InputArgument::OPTIONAL,
+                 'Append table in the created database.'
+             );
     }
 
     /**
@@ -28,9 +33,10 @@ class GenerateDatabaseCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        echo 'Success';
-
-        return parent::execute($input, $output);
+        printf("\n");
+        echo (new Quark(getcwd()))->createDatabase($input->getArgument('table'));
+        printf("\n");
+        return true;
     }
 
 }

@@ -1,13 +1,20 @@
 #!/usr/bin/env php
 <?php
 
-// If in 'bin' directory
-if (!file_exists('./composer.json')) {
-    include __DIR__ . '/../vendor/autoload.php';
+$dir = __DIR__.'/..';
+
+if (!file_exists($dir.'/autoload.php')) {
+    $dir = __DIR__.'/../vendor';
+}
+if (!file_exists($dir.'/autoload.php')) {
+    $dir = __DIR__.'/../../..';
+}
+if (!file_exists($dir.'/autoload.php')) {
+    echo 'Autoload not found.';
+    exit(1);
 }
 
-// If in project root
-include './vendor/autoload.php';
+include $dir.'/autoload.php';
 
 use Protoqol\Quark\Commands\GenerateDatabaseCommand;
 use Protoqol\Quark\Commands\GenerateTableCommand;
@@ -18,10 +25,10 @@ use Symfony\Component\Console\Application;
 $quark = new Application('Quark Database');
 
 $quark->addCommands([
-    (new GenerateDatabaseCommand()),
-    (new GenerateTableCommand()),
     (new SetExecutableCommand()),
     (new RemoveExecutableCommand()),
+    (new GenerateDatabaseCommand()),
+    (new GenerateTableCommand()),
 ]);
 
 try {

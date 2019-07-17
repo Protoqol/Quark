@@ -4,3 +4,4 @@ vendor
 todo.md
 .phpunit.result.cache
 quark
+database/

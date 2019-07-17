@@ -1,8 +1,12 @@
 <?php
 
+namespace Protoqol\Quark;
 
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * Class Quark
+ */
 class Quark
 {
 
@@ -18,6 +22,33 @@ class Quark
      */
     private $cwd;
 
+    /**
+     * Default Quark directory name. Used as overhead for Quark activity.
+     * @var string
+     */
+    private $defaultQuarkDirectoryName = 'quark/';
+
+    /**
+     * Default database directory. @TODO possibly get from config.
+     * @var string
+     */
+    private $defaultDirectory = 'database/';
+
+    /**
+     * Holds default database file name. @TODO Possibly via config.
+     * @var string
+     */
+    private $defaultFileName = 'database.qrk';
+
+    /**
+     * Holds array of strings of possible database directories in a project.
+     * @var array
+     */
+    private $standardDatabaseDirectories = [
+        'DB',
+        'db',
+    ];
+
     public function __construct(string $cwd)
     {
         $this->fs  = new Filesystem();
@@ -25,7 +56,7 @@ class Quark
     }
 
     /**
-     * Set an Quark executable in current directory.
+     * Set a Quark executable in root directory.
      * @return bool
      */
     public function setExecutable(): bool
@@ -50,5 +81,61 @@ class Quark
         }
 
         return false;
+    }
+
+    /**
+     * Initialise database file in ./database/database.qrk
+     *
+     * @param string|null $table
+     *
+     * @return bool|string
+     */
+    public function createDatabase(?string $table = '')
+    {
+        // Create quark directory.
+        $file = $this->createResidingDatabaseDirectory() . $this->defaultFileName;
+
+        // Create database.qrk
+        $this->fs->touch($file);
+
+        // If table name is specified, create table in database.
+        if ($table && strlen($table) > 0) {
+            $this->fs->appendToFile($file, (new Table())->generateTable($table));
+        }
+
+        if ($this->fs->exists($file)) {
+            return "Database created at: " . $this->cwd . '/' . $file;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check and create the residing directory for Quark and create database.qrk.
+     * @return string
+     */
+    private function createResidingDatabaseDirectory(): string
+    {
+        $dir = 'database';
+
+        if (!$this->fs->exists($this->standardDatabaseDirectories)) {
+            $folder = $this->defaultDirectory . $this->defaultQuarkDirectoryName;
+            $this->fs->mkdir($folder);
+            $dir = $folder;
+        }
+
+        if ($this->fs->exists('db')) {
+            $folder = './db/' . $this->defaultQuarkDirectoryName;
+            $this->fs->mkdir($folder);
+            $dir = $folder;
+        }
+
+        if ($this->fs->exists('DB')) {
+            $folder = './DB/' . $this->defaultQuarkDirectoryName;
+            $this->fs->mkdir($folder);
+            $dir = $folder;
+        }
+
+        return $dir;
     }
 }

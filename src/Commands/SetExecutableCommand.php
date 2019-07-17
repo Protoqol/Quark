@@ -10,11 +10,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SetExecutableCommand extends Command
 {
 
-    protected static $defaultName = 'quark:publish';
+    protected static $defaultName = 'quark:install';
 
     protected function configure()
     {
-        $this->setDescription('Get a Quark executable in your project root directory.');
+        $this->setAliases(['quark:publish']);
+        $this->setDescription('Install a Quark executable in your project root directory.');
         $this->setHelp('This command creates a Quark executable in the project\'s root directory.');
     }
 
