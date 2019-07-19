@@ -138,4 +138,9 @@ class Quark
 
         return $dir;
     }
+
+    public function checkForExistingDatabase()
+    {
+        if($this->fs->exists())
+    }
 }

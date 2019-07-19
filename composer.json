@@ -3,6 +3,9 @@
   "description": "A stand-alone - light-weight - no-nonsense - flat-file, database called Quark.",
   "type": "library",
   "license": "MIT",
+  "quark": {
+
+  },
   "authors": [
     {
       "name": "Quinten Justus",

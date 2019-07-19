@@ -33,10 +33,9 @@ class GenerateDatabaseCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        printf("\n");
-        echo (new Quark(getcwd()))->createDatabase($input->getArgument('table'));
-        printf("\n");
-        return true;
+        $output->writeln([
+            (new Quark(getcwd()))->createDatabase($input->getArgument('table')),
+        ]);
     }
 
 }
