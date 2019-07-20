@@ -1,20 +1,23 @@
 #!/usr/bin/env php
 <?php
 
-$dir = __DIR__.'/..';
+$dir = __DIR__ . '/..';
 
-if (!file_exists($dir.'/autoload.php')) {
-    $dir = __DIR__.'/../vendor';
+if (!file_exists($dir . '/autoload.php')) {
+    $dir = __DIR__ . '/../vendor';
 }
-if (!file_exists($dir.'/autoload.php')) {
-    $dir = __DIR__.'/../../..';
+if (!file_exists($dir . '/autoload.php')) {
+    $dir = './vendor';
 }
-if (!file_exists($dir.'/autoload.php')) {
+if (!file_exists($dir . '/autoload.php')) {
+    $dir = __DIR__ . '/../../..';
+}
+if (!file_exists($dir . '/autoload.php')) {
     echo 'Autoload not found.';
     exit(1);
 }
 
-include $dir.'/autoload.php';
+include $dir . '/autoload.php';
 
 use Protoqol\Quark\Commands\GenerateDatabaseCommand;
 use Protoqol\Quark\Commands\GenerateTableCommand;
@@ -31,9 +34,4 @@ $quark->addCommands([
     (new GenerateTableCommand()),
 ]);
 
-try {
-    $quark->run();
-
-} catch (Exception $e) {
-    return $e;
-}
+$quark->run();
