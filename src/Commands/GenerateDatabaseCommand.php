@@ -18,17 +18,20 @@ class GenerateDatabaseCommand extends Command
 
     protected function configure()
     {
-        $this->setDescription('Initialise an empty Quark database with an optional table inserted.')
-             ->setHelp('quark initialise')
-             ->setAliases(['quark:initialise'])
+        $this->setDescription('Create a new Quark database with an optional table inserted already appended.')
+             ->setHelp('./quark create database|table ...name(s)')
+             ->setAliases([
+                 'new',
+                 'make'
+             ])
              ->addArgument(
                  'type',
                  InputArgument::REQUIRED,
-                 'Database or Table'
+                 'Database (database|db) or Table (table|tb)'
              )->addArgument(
                 'name',
                 InputArgument::IS_ARRAY,
-                'Table name'
+                'Table name(s)'
             );
     }
 
@@ -43,9 +46,19 @@ class GenerateDatabaseCommand extends Command
     {
         $type = strtolower($input->getArgument('type'));
 
+        if($type === 'tb'){
+            $type = 'table';
+        }
+
+        if($type === 'db'){
+            $type = 'database';
+        }
+
         switch ($type) {
             case ($type === self::$database):
-                $output->writeln(Quark::styleWriteLn((new Quark(getcwd()))->createDatabase($input->getArgument('name'))));
+                foreach($input->getArgument('name') as $database){
+                    $output->writeln(Quark::styleWriteLn((new Quark(getcwd()))->createDatabase($database)));
+                }
                 break;
             case ($type === self::$table):
                 $output->writeln('Table created... @TODO');
