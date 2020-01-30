@@ -1,7 +1,12 @@
 <?php
 
-namespace Protoqol\Quark;
+namespace Protoqol\Quark\IO;
 
+/**
+ * Class Table
+ *
+ * @package Protoqol\Quark\IO
+ */
 class Table
 {
 
@@ -12,7 +17,7 @@ class Table
 
     /**
      * @param string $tableName
-     * @param array $columns
+     * @param array  $columns
      *
      * @return string
      */

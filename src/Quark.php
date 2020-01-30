@@ -2,6 +2,7 @@
 
 namespace Protoqol\Quark;
 
+use Protoqol\Quark\Connection\DatabaseAccessor;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -11,59 +12,88 @@ class Quark
 {
 
     /**
+     * Field name for meta data
+     */
+    const META_ACCESSOR = '__quark_meta';
+
+    /**
      * FileSystem instance
+     *
      * @var Filesystem $fs
      */
-    private $fs;
+    private Filesystem $fs;
 
     /**
      * Current working directory
+     *
      * @var string $cwd
      */
-    private $cwd;
+    private string $cwd;
 
     /**
      * Default Quark directory name. Used as overhead for Quark activity.
+     *
      * @var string $defaultQuarkDirectoryName
      */
-    private $defaultQuarkDirectoryName = 'quark/';
+    private string $defaultQuarkDirectoryName = 'quark/';
 
     /**
      * Default database directory. @TODO possibly get from config.
+     *
      * @var string $defaultDirectory
      */
-    private $defaultDirectory = 'database/';
+    private string $defaultDirectory = 'database/';
 
     /**
      * Holds default database file name. @TODO Possibly via config.
+     *
      * @var string $defaultFileName
      */
-    private $defaultFileName = 'database.qrk';
+    private string $defaultFileName = 'database.qrk';
 
     /**
      * Holds array of strings of possible database directories in a project.
+     *
      * @var array $standardDatabaseDirectories
      */
-    private $standardDatabaseDirectories = [
+    private array $standardDatabaseDirectories = [
         'DB',
         'db',
     ];
 
     /**
      * Force overwrite.
-     * @var bool $mock
+     *
+     * @var bool $force
      */
-    private $force;
+    private bool $force;
 
-    public function __construct(string $cwd, bool $force = false)
+    /**
+     * Quark constructor.
+     *
+     * @param string $cwd
+     * @param bool   $force
+     */
+    public function __construct(string $cwd = NULL, bool $force = false)
     {
         $this->fs    = new Filesystem();
-        $this->cwd   = $cwd;
+        $this->cwd   = $cwd ?? getcwd();
         $this->force = $force;
     }
 
     /**
+     * @param string|null $customFile
+     *
+     * @return DatabaseAccessor
+     */
+    public function connection(string $customFile = NULL)
+    {
+        return (new DatabaseAccessor($customFile));
+    }
+
+    /**
      * Set a Quark executable in root directory.
+     *
      * @return bool
      */
     public function setExecutable(): bool
@@ -122,6 +152,7 @@ class Quark
 
     /**
      * Check and create the residing directory for Quark and create database.qrk.
+     *
      * @return string
      */
     private function createResidingDatabaseDirectory(): string
@@ -156,6 +187,9 @@ class Quark
         return false;
     }
 
+    /**
+     * @return void
+     */
     public function checkForExistingDatabase()
     {
         if ($this->fs->exists()) {
