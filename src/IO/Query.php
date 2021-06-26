@@ -3,9 +3,9 @@
 namespace Protoqol\Quark\IO;
 
 use Exception;
+use Protoqol\Quark\Interfaces\QueryInterface;
 use Protoqol\Quark\Connection\DatabaseAccessor;
 use Protoqol\Quark\Quark;
-use Protoqol\Interfaces\Quark\QueryInterface;
 
 /**
  * Class Query

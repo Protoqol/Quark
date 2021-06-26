@@ -1,12 +1,9 @@
 <?php
 
-
-namespace Protoqol\Prequel\Tests\Unit;
-
+namespace Commands;
 
 use PHPUnit\Framework\TestCase;
-use Protoqol\Quark\Commands\GenerateDatabaseCommand;
-use Protoqol\Quark\Commands\SetExecutableCommand;
+use Protoqol\Quark\Config\Commands\SetExecutableCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 

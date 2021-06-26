@@ -1,6 +1,6 @@
 <?php
 
-namespace Protoqol\Interfaces\Quark;
+namespace Protoqol\Quark\Interfaces;
 
 /**
  * Interface QueryInterface

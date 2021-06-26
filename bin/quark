@@ -1,40 +1,43 @@
 #!/usr/bin/env php
 <?php
-    
-    $dir = __DIR__ . '/..';
-    
-    if (!file_exists($dir . '/autoload.php')) {
-        $dir = __DIR__ . '/../vendor';
-    }
-    
-    if (!file_exists($dir . '/autoload.php')) {
-        $dir = './vendor';
-    }
-    
-    if (!file_exists($dir . '/autoload.php')) {
-        $dir = __DIR__ . '/../../..';
-    }
-    
-    if (!file_exists($dir . '/autoload.php')) {
-        echo 'Autoload not found.';
-        exit(1);
-    }
-    
-    require_once $dir . '/autoload.php';
-    
-    use Protoqol\Quark\Commands\GenerateDatabaseCommand;
-    use Protoqol\Quark\Commands\GenerateTableCommand;
-    use Protoqol\Quark\Commands\RemoveExecutableCommand;
-    use Protoqol\Quark\Commands\SetExecutableCommand;
-    use Symfony\Component\Console\Application;
-    
-    $quark = new Application('<href=https://github.com/QuintenJustus/QuarkDev><options=bold,reverse,underscore>Quark Database</></></>');
-    
-    $quark->addCommands([
-        (new SetExecutableCommand()),
-        (new RemoveExecutableCommand()),
-        (new GenerateDatabaseCommand()),
-        (new GenerateTableCommand()),
-    ]);
-    
-    $quark->run();
+
+$dir = __DIR__ . '/..';
+
+if (!file_exists($dir . '/autoload.php')) {
+    $dir = __DIR__ . '/../vendor';
+}
+
+if (!file_exists($dir . '/autoload.php')) {
+    $dir = './vendor';
+}
+
+if (!file_exists($dir . '/autoload.php')) {
+    $dir = __DIR__ . '/../../..';
+}
+
+if (!file_exists($dir . '/autoload.php')) {
+    echo 'Autoload.php not found.';
+    exit(1);
+}
+
+require_once $dir . '/autoload.php';
+
+use Protoqol\Quark\Commands\GenerateDatabaseCommand;
+use Protoqol\Quark\Commands\GenerateTableCommand;
+use Protoqol\Quark\Commands\RemoveExecutableCommand;
+use Protoqol\Quark\Commands\SetExecutableCommand;
+use Symfony\Component\Console\Application;
+
+$quark = new Application('<href=https://github.com/QuintenJustus/QuarkDev><options=bold,reverse,underscore>Quark Database</></></>');
+
+$quark->addCommands([
+    (new SetExecutableCommand()),
+    (new RemoveExecutableCommand()),
+    (new GenerateDatabaseCommand()),
+    (new GenerateTableCommand()),
+]);
+
+
+$quark->run();
+
+?>

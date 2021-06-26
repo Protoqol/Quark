@@ -1,9 +1,9 @@
 <?php
 
-namespace Protoqol\Prequel\Tests\Unit;
+namespace Commands;
 
 use PHPUnit\Framework\TestCase;
-use Protoqol\Quark\Commands\GenerateDatabaseCommand;
+use Protoqol\Quark\Config\Commands\GenerateDatabaseCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Filesystem\Filesystem;

@@ -9,17 +9,30 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class SetExecutableCommand extends Command
 {
-
+    /**
+     * @var string
+     */
     protected static $defaultName = 'install';
 
-    protected function configure()
+    /**
+     * Configure command.
+     *
+     * @return void
+     */
+    protected function configure(): void
     {
         $this->setAliases(['quark:install']);
         $this->setDescription('Install a Quark executable in your project\'s root directory.');
         $this->setHelp('This command creates a Quark executable in the project\'s root directory as a convenience.');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return bool
+     */
+    protected function execute(InputInterface $input, OutputInterface $output): bool
     {
         $res = (new Quark(getcwd()))->setExecutable();
 

@@ -1,0 +1,4 @@
+DB_NAME=quark
+DB_TABLE_PREFIX=
+
+FILE_LOCATION=database/

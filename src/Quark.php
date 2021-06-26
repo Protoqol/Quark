@@ -2,7 +2,9 @@
 
 namespace Protoqol\Quark;
 
+use Protoqol\Quark\Config\Config;
 use Protoqol\Quark\Connection\DatabaseAccessor;
+use Protoqol\Quark\IO\Table;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -14,7 +16,7 @@ class Quark
     /**
      * Field name for meta data
      */
-    const META_ACCESSOR = '__quark_meta';
+    public const META_ACCESSOR = '__quark_meta';
 
     /**
      * FileSystem instance
@@ -62,23 +64,22 @@ class Quark
     ];
 
     /**
-     * Force overwrite.
+     * Holds a config instance.
      *
-     * @var bool $force
+     * @var Config $config
      */
-    private bool $force;
+    public Config $config;
 
     /**
      * Quark constructor.
      *
-     * @param string $cwd
-     * @param bool   $force
+     * @param string|null $cwd
      */
-    public function __construct(string $cwd = NULL, bool $force = false)
+    public function __construct(string $cwd = NULL)
     {
-        $this->fs    = new Filesystem();
-        $this->cwd   = $cwd ?? getcwd();
-        $this->force = $force;
+        $this->fs = new Filesystem();
+        $this->cwd = $cwd ?? getcwd();
+        $this->config = new Config('.');
     }
 
     /**
@@ -86,7 +87,7 @@ class Quark
      *
      * @return DatabaseAccessor
      */
-    public function connection(string $customFile = NULL)
+    public function connection(string $customFile = NULL): DatabaseAccessor
     {
         return (new DatabaseAccessor($customFile));
     }
@@ -107,14 +108,14 @@ class Quark
             $this->fs->copy($origin, $target, true);
             $this->fs->chmod($target, 0755);
 
-            return (bool)$this->fs->exists($target);
+            return $this->fs->exists($target);
         }
 
         if ($this->fs->exists($dev_origin)) {
             $this->fs->copy($dev_origin, $target, true);
             $this->fs->chmod($target, 0755);
 
-            return (bool)$this->fs->exists($target);
+            return $this->fs->exists($target);
         }
 
         return false;
@@ -138,7 +139,7 @@ class Quark
 
         // If table name is specified, create table in database.
         $tableMsg = '';
-        if ($table && strlen($table) > 0) {
+        if ($table && $table !== '') {
             $this->fs->appendToFile($file, (new Table())->generateTable($table));
             $tableMsg = " with table '{$table}'";
         }
@@ -204,7 +205,7 @@ class Quark
      *
      * @return array
      */
-    public static function styleWriteLn(string $output)
+    public static function styleWriteLn(string $output): array
     {
         return [
             '<options=bold;fg=white;bg=magenta>QUARK says...</>',
