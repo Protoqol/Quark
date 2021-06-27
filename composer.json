@@ -17,6 +17,7 @@
     "php": "^7.4",
     "ext-dom": "*",
     "ext-json": "*",
+    "nesbot/carbon": "^2.49",
     "symfony/console": "^4.3",
     "symfony/filesystem": "^4.3",
     "vlucas/phpdotenv": "^5.3"
@@ -36,7 +37,10 @@
   "autoload-dev": {
     "psr-4": {
       "Protoqol\\Quark\\Tests\\": "tests/"
-    }
+    },
+    "files": [
+      "src/Helpers/helpers.php"
+    ]
   },
   "scripts": {
     "test": [

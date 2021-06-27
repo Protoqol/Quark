@@ -2,7 +2,6 @@
 
 namespace Protoqol\Quark;
 
-use Protoqol\Quark\Config\Config;
 use Protoqol\Quark\Connection\DatabaseAccessor;
 use Protoqol\Quark\IO\Table;
 use Symfony\Component\Filesystem\Filesystem;
@@ -12,7 +11,6 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class Quark
 {
-
     /**
      * Field name for meta data
      */
@@ -64,13 +62,6 @@ class Quark
     ];
 
     /**
-     * Holds a config instance.
-     *
-     * @var Config $config
-     */
-    public Config $config;
-
-    /**
      * Quark constructor.
      *
      * @param string|null $cwd
@@ -78,8 +69,7 @@ class Quark
     public function __construct(string $cwd = NULL)
     {
         $this->fs = new Filesystem();
-        $this->cwd = $cwd ?? getcwd();
-        $this->config = new Config('.');
+        $this->cwd = $cwd ?? $GLOBALS['ROOT_DIR'];
     }
 
     /**
@@ -122,7 +112,7 @@ class Quark
     }
 
     /**
-     * Initialise database file in ./database/database.qrk
+     * Initialise database file in configured directory.
      *
      * @param string|null $table
      *
@@ -130,12 +120,8 @@ class Quark
      */
     public function createDatabase(?string $table = '')
     {
-        // Create quark directory.
         $file = $this->createResidingDatabaseDirectory() . $this->defaultFileName;
-
-        // Create database.qrk
         $this->fs->touch($file);
-
 
         // If table name is specified, create table in database.
         $tableMsg = '';
@@ -152,7 +138,7 @@ class Quark
     }
 
     /**
-     * Check and create the residing directory for Quark and create database.qrk.
+     * Check and create the residing directory for Quark tables.
      *
      * @return string
      */
@@ -189,17 +175,7 @@ class Quark
     }
 
     /**
-     * @return void
-     */
-    public function checkForExistingDatabase()
-    {
-        if ($this->fs->exists()) {
-            //
-        }
-    }
-
-    /**
-     * Generate command in Quark's style.
+     * Generate command output in Quark's style.
      *
      * @param string $output
      *
@@ -208,9 +184,7 @@ class Quark
     public static function styleWriteLn(string $output): array
     {
         return [
-            '<options=bold;fg=white;bg=magenta>QUARK says...</>',
             '<options=bold;fg=green;>' . $output . '</>',
-            '<fg=white>end of message</>',
         ];
     }
 }

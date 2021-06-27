@@ -22,21 +22,20 @@ if (!file_exists($dir . '/autoload.php')) {
 
 require_once $dir . '/autoload.php';
 
-use Protoqol\Quark\Commands\GenerateDatabaseCommand;
-use Protoqol\Quark\Commands\GenerateTableCommand;
-use Protoqol\Quark\Commands\RemoveExecutableCommand;
+use Protoqol\Quark\Commands\GenerateMigrationCommand;
+use Protoqol\Quark\Commands\RunMigrationsCommand;
 use Protoqol\Quark\Commands\SetExecutableCommand;
 use Symfony\Component\Console\Application;
+
+$GLOBALS['ROOT_DIR'] = getcwd();
 
 $quark = new Application('<href=https://github.com/QuintenJustus/QuarkDev><options=bold,reverse,underscore>Quark Database</></></>');
 
 $quark->addCommands([
     (new SetExecutableCommand()),
-    (new RemoveExecutableCommand()),
-    (new GenerateDatabaseCommand()),
-    (new GenerateTableCommand()),
+    (new GenerateMigrationCommand()),
+    (new RunMigrationsCommand()),
 ]);
-
 
 $quark->run();
 

@@ -34,7 +34,7 @@ class SetExecutableCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): bool
     {
-        $res = (new Quark(getcwd()))->setExecutable();
+        $res = (new Quark($GLOBALS['ROOT_DIR']))->setExecutable();
 
         if ($res) {
             $output->writeln([

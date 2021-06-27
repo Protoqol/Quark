@@ -1,4 +1,2 @@
-DB_NAME=quark
-DB_TABLE_PREFIX=
+QUARK_DIRECTORY=/database/quark/
 
-FILE_LOCATION=database/

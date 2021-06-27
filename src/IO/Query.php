@@ -3,8 +3,8 @@
 namespace Protoqol\Quark\IO;
 
 use Exception;
-use Protoqol\Quark\Interfaces\QueryInterface;
 use Protoqol\Quark\Connection\DatabaseAccessor;
+use Protoqol\Quark\Interfaces\QueryInterface;
 use Protoqol\Quark\Quark;
 
 /**
@@ -16,7 +16,7 @@ class Query implements QueryInterface
 {
 
     /**
-     * @var $connection
+     * @var DatabaseAccessor
      */
     public DatabaseAccessor $connection;
 
@@ -47,12 +47,12 @@ class Query implements QueryInterface
     /**
      * @var QuarkPrefetch
      */
-    private $prefetch;
+    private QuarkPrefetch $prefetch;
 
     /**
      * @var int
      */
-    private $limit;
+    private int $limit;
 
     /**
      * Query constructor. Establish connection with database file.
@@ -65,16 +65,16 @@ class Query implements QueryInterface
     public function __construct(string $database = '', string $table = '')
     {
         $this->connection = (new Quark())->connection();
-        $this->database   = $database !== '' ? $database : env('DB_DATABASE');
-        $this->table      = $table;
+        $this->database = $database !== '' ? $database : env('DB_DATABASE');
+        $this->table = $table;
 
         if (!$this->connection->getInstance()->isConnected) {
-            throw new Exception('Quark Says: Could not find quark database. Are you sure it exists? (root/database/quark/database.qrk)');
+            throw new Exception('Could not find quark database. Are you sure it exists? (root/database/quark/database.qrk)');
         }
 
         $this->prefetch = new QuarkPrefetch($this->database, $this->table);
-        $this->backup   = $this->connection->getData();
-        $this->data     = $this->backup->{$this->database};
+        $this->backup = $this->connection->getData();
+        $this->data = $this->backup->{$this->database};
     }
 
     /**
@@ -117,11 +117,11 @@ class Query implements QueryInterface
      */
     public function from(string $table, string $database = NULL)
     {
-        $this->table    = $table;
-        $this->database = $database !== NULL ? $database : $this->database;
+        $this->table = $table;
+        $this->database = $database ?? $this->database;
 
         $this->prefetch = new QuarkPrefetch($this->database, $this->table);
-        $this->data     = $this->backup->{$this->database}->{$this->table};
+        $this->data = $this->backup->{$this->database}->{$this->table};
 
         return $this;
     }
@@ -132,7 +132,7 @@ class Query implements QueryInterface
      *
      * @return Query
      */
-    public function whereIs($column, $value)
+    public function whereIs($column, $value): Query
     {
         $__data = $this->data;
         $__meta = (array)array_shift($__data);
@@ -220,11 +220,11 @@ class Query implements QueryInterface
         $this->prefetch->columnsExists($columns);
 
         if (!$this->connection->prepareForEdit()) {
-            throw new Exception('Quark Says: Could not make a content copy of database.qrk, aborting.');
+            throw new Exception('Could not make a content copy of database.qrk, aborting.');
         }
 
         if ($columns !== ['*'] && $columns === []) {
-            throw new Exception('Quark Says: Could not retrieve data, key is missing in function call @ get(string $key).');
+            throw new Exception('Could not retrieve data, key is missing in function call @ get(string $key).');
         }
 
         $__data = $this->data;

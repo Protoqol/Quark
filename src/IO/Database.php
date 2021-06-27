@@ -11,6 +11,15 @@ namespace Protoqol\Quark\IO;
  */
 class Database
 {
+    /**
+     * Database constructor.
+     *
+     * @param array $data
+     */
+    public function __construct(array $data)
+    {
+
+    }
 
     public function generateDatabase()
     {

@@ -47,11 +47,10 @@ class DatabaseAccessor
      *
      * @return object
      */
-    public function getInstance()
+    public function getInstance(): object
     {
-
         return (object)[
-            'isConnected' => file_exists($this->fileResolver()),
+            'isConnected' => is_dir($this->fileResolver()),
             'path'        => $this->fileResolver(),
         ];
     }
@@ -61,12 +60,11 @@ class DatabaseAccessor
      *
      * @return bool
      */
-    public function prepareForEdit()
+    public function prepareForEdit(): bool
     {
         $this->backup = file_get_contents($this->file);
-        $hold         = $this->backup;
 
-        return (bool)($hold && !empty($hold));
+        return $this->backup;
     }
 
     /**
@@ -75,6 +73,7 @@ class DatabaseAccessor
      * @param string $database
      *
      * @return mixed
+     * @throws \JsonException
      */
     public function getData(bool $json_decoded = true, string $database = '')
     {
@@ -82,10 +81,10 @@ class DatabaseAccessor
         $this->data = $this->backup;
 
         if (!empty($database)) {
-            return $json_decoded ? json_decode($this->data)->{$database} : $this->data;
+            return $json_decoded ? json_decode($this->data, true, 512, JSON_THROW_ON_ERROR)->{$database} : $this->data;
         }
 
-        return $json_decoded ? json_decode($this->data) : $this->data;
+        return $json_decoded ? json_decode($this->data, true, 512, JSON_THROW_ON_ERROR) : $this->data;
     }
 
     /**
@@ -93,17 +92,17 @@ class DatabaseAccessor
      *
      * @return string
      */
-    private function fileResolver()
+    private function fileResolver(): string
     {
-        $presumedFileName = '/database/quark/database.qrk';
-        $fileLocation     = '';
+        $presumedFileName = '/database/quark';
+        $fileLocation = '';
 
         if (file_exists(dirname(__DIR__) . $presumedFileName)) {
             $fileLocation = dirname(__DIR__) . $presumedFileName;
         }
 
-        if (file_exists(getcwd() . '/..' . $presumedFileName)) {
-            $fileLocation = getcwd() . '/..' . $presumedFileName;
+        if (file_exists($GLOBALS['ROOT_DIR'] . '/..' . $presumedFileName)) {
+            $fileLocation = $GLOBALS['ROOT_DIR'] . '/..' . $presumedFileName;
         }
 
         return $fileLocation;
