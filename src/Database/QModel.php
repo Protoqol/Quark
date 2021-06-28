@@ -36,8 +36,9 @@ abstract class QModel
      * QModel constructor.
      *
      * @param array $attributes
+     * @param bool  $fresh This parameter controls whether or not the data should be retrieved or not.
      */
-    public function __construct(array $attributes = [])
+    public function __construct(array $attributes = [], bool $fresh = false)
     {
         $this->attributes = $attributes;
         $this->backup = $attributes;
@@ -46,7 +47,9 @@ abstract class QModel
             $this->table = $this->resolveTableName();
         }
 
-        $this->read();
+        if (!$fresh) {
+            $this->read();
+        }
     }
 
     /**
@@ -58,17 +61,30 @@ abstract class QModel
      */
     private function flattenColumns(array $columns): array
     {
-        $meta = [];
-        array_walk($columns, static function ($key) use (&$meta) {
+        $metaColumns = [];
+        foreach ($columns as $key) {
             foreach ($key as $columnName => $columnType) {
-                $meta[] = [
+                $metaColumns[] = [
                     'name' => $columnName,
                     'type' => $columnType
                 ];
             }
-        });
+        }
+        return $metaColumns;
+    }
 
-        return $meta;
+    /**
+     * Get all records from model.
+     *
+     * @param array $columns
+     *
+     * @return QCollection
+     */
+    public static function all(array $columns = ['*']): QCollection
+    {
+        $model = new static;
+
+        return self::toQCollection($model->data, $model->meta_data, $columns);
     }
 
     /**

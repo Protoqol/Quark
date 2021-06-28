@@ -4,6 +4,7 @@
 namespace Protoqol\Quark\IO;
 
 
+use JsonMachine\JsonMachine;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -66,15 +67,21 @@ class Reader
      *
      * @return array
      */
-    public function readData(string $table): array
+    public function readData(string $table)
     {
         // @TODO refactor, this is a temporary workaround.
         $tmp = getcwd() . "/../database/quark/tables/" . $table . '.qrk';
 
         if ($this->fs->exists($tmp)) {
+            $meta = [];
 
-            // @TODO refactor to json-machine
-            return json_decode(file_get_contents($tmp), true);
+            $metaIterator = JsonMachine::fromFile($tmp);
+
+            foreach ($metaIterator as $key => $value) {
+                $meta[$key] = $value;
+            }
+
+            return $meta;
         }
 
         throw new FileNotFoundException('File at "' . $tmp . '" does not exist.');

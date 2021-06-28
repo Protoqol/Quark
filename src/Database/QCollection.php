@@ -18,7 +18,7 @@ class QCollection
     public function __construct(array $data, string $classCast)
     {
         $this->items = array_map(static function ($row) use ($classCast) {
-            return new $classCast($row);
+            return new $classCast($row, true);
         }, $data);
     }
 

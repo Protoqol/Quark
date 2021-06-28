@@ -11,14 +11,14 @@ trait QCollector
     {
         # Get flat list of column names to assign them to retrieved data.
         $metaColumns = [];
-        array_walk($meta['__columns'], static function (&$key) use (&$metaColumns) {
+        foreach ($meta['__columns'] as $key) {
             foreach ($key as $columnName => $columnType) {
                 $metaColumns[] = [
                     'name' => $columnName,
                     'type' => $columnType
                 ];
             }
-        });
+        }
 
         if (is_array($data[0])) {
             $i = 0;
@@ -26,7 +26,7 @@ trait QCollector
                 foreach ($rows as $key => $value) {
                     $column = $metaColumns[$key];
 
-                    // Check what columns are requested. Asterisk means all columns will be returned.
+                    # Check what columns are requested. Asterisk means all columns will be returned.
                     if (in_array(array_values($column)[0], $columns, true) || $columns[0] === '*') {
                         $data[$i][$column['name']] = self::getTypedValue($value, $column['type']);
                     }
@@ -40,7 +40,7 @@ trait QCollector
             foreach ($data as $key => $value) {
                 $column = $metaColumns[$key];
 
-                // Check what columns are requested. Asterisk means all columns will be returned.
+                # Check what columns are requested. Asterisk means all columns will be returned.
                 if (in_array(array_values($column)[0], $columns, true) || $columns[0] === '*') {
                     $data[$column['name']] = self::getTypedValue($value, $column['type']);
                 }
