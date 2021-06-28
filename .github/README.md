@@ -3,10 +3,7 @@
 </div>
 
 <p align="center">
-    <a href="https://travis-ci.org/Protoqol/Prequel.svg?branch=Dev">
-	    <img alt="Travis" src="https://travis-ci.com/QuintenJustus/QuarkDev.svg?token=ZdiYagasyKHEDjbRoVro&branch=master"/>	
-    </a>
-    <a href="https://packagist.org/packages/protoqol/prequel">
+    <a href="https://packagist.org/packages/protoqol/quark">
 	    <img alt="PHP version" src="https://img.shields.io/badge/php-%5E7.2.5-lightblue.svg"/>	
     </a>
     <a href="https://twitter.com/intent/follow?screen_name=Protoqol_XYZ">
