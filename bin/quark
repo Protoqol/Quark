@@ -23,20 +23,36 @@ if (!file_exists($dir . '/autoload.php')) {
 require_once $dir . '/autoload.php';
 
 use Protoqol\Quark\Commands\GenerateMigrationCommand;
+use Protoqol\Quark\Commands\InstallQuarkCommand;
 use Protoqol\Quark\Commands\RunMigrationsCommand;
 use Protoqol\Quark\Commands\SetExecutableCommand;
+use Protoqol\Quark\Quark;
 use Symfony\Component\Console\Application;
 
 $GLOBALS['ROOT_DIR'] = getcwd();
+$GLOBALS['QUARK'] = (new Quark($GLOBALS['ROOT_DIR']));
 
-$quark = new Application('<href=https://github.com/QuintenJustus/QuarkDev><options=bold,reverse,underscore>Quark Database</></></>');
+/**
+ * Get Quark instance.
+ *
+ * @TODO Move separate helpers file.
+ *
+ * @return Quark
+ */
+function quark(): Quark
+{
+    return $GLOBALS['QUARK'] ?: (new Quark($GLOBALS['ROOT_DIR']));
+}
 
-$quark->addCommands([
+$app = new Application('<href=https://github.com/QuintenJustus/QuarkDev><options=bold,reverse,underscore>Quark Database</></></>');
+
+$app->addCommands([
     (new SetExecutableCommand()),
     (new GenerateMigrationCommand()),
     (new RunMigrationsCommand()),
+    (new InstallQuarkCommand())
 ]);
 
-$quark->run();
+$app->run();
 
 ?>

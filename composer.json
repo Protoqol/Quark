@@ -11,16 +11,17 @@
   ],
   "minimum-stability": "beta",
   "bin": [
-    "bin/Quark"
+    "bin/quark"
   ],
   "require": {
-    "php": "^7.4",
+    "php": "^7.2.5",
     "ext-dom": "*",
     "ext-json": "*",
+    "halaxa/json-machine": "^0.7.0",
     "nesbot/carbon": "^2.49",
-    "symfony/console": "^4.3",
-    "symfony/filesystem": "^4.3",
-    "vlucas/phpdotenv": "^5.3"
+    "symfony/console": "^5.3",
+    "symfony/filesystem": "^5.3",
+    "vlucas/phpdotenv": "^4.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^7"
@@ -32,15 +33,15 @@
   "autoload": {
     "psr-4": {
       "Protoqol\\Quark\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Protoqol\\Quark\\Tests\\": "tests/"
     },
     "files": [
       "src/Helpers/helpers.php"
     ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Protoqol\\Quark\\Tests\\": "tests/"
+    }
   },
   "scripts": {
     "test": [

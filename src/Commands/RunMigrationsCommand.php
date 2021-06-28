@@ -2,10 +2,11 @@
 
 namespace Protoqol\Quark\Commands;
 
-use Protoqol\Quark\Database\Migration;
-use Protoqol\Quark\Quark;
+use Carbon\Carbon;
+use Protoqol\Quark\Database\Migrations;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class RunMigrationsCommand extends Command
@@ -23,6 +24,7 @@ class RunMigrationsCommand extends Command
     protected function configure(): void
     {
         $this->setDescription('Run Quark migrations.')
+            ->addOption('dry-run', null, InputOption::VALUE_OPTIONAL, "Dry run migrations, meaning the migrations will not be persisted to the database.", false)
             ->setHelp('./quark migrate');
     }
 
@@ -30,15 +32,29 @@ class RunMigrationsCommand extends Command
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return void
-     * @throws Exception
+     * @return int
+     * @throws \Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        (new Migration)->runMigrationFiles();
+        $migrations = new Migrations($input->getOption('dry-run'));
 
-        $msg = "Successfully ran migrations";
+        if (!$migrations->pendingMigrations) {
+            $output->writeln("<options=bold;fg=green>There are no pending migrations!</>");
+            $time = Carbon::parse($migrations->latestMigration['migrated_at'])->format('m-d-Y H:i:s');
+            $output->writeln("<options=bold;fg=yellow>Latest migration was \"{$migrations->latestMigration['name']}\" on {$time}</>");
 
-        $output->writeln(Quark::styleWriteLn($msg));
+            return 1;
+        }
+
+        $output->writeln("<options=bold;fg=green>Migrating " . $migrations->pendingMigrations . " migrations</>");
+
+        foreach ($migrations->run() as $value) {
+            $output->writeln("<options=bold;fg=yellow;>- Generating table for " . $value . ($input->getOption('dry-run') ? " - (dry)" : '') . "</>");
+        }
+
+        $output->writeln("<options=bold;fg=green;>Successfully processed all migrations.</>");
+
+        return 1;
     }
 }

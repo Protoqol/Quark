@@ -7,7 +7,7 @@
 	    <img alt="Travis" src="https://travis-ci.com/QuintenJustus/QuarkDev.svg?token=ZdiYagasyKHEDjbRoVro&branch=master"/>	
     </a>
     <a href="https://packagist.org/packages/protoqol/prequel">
-	    <img alt="PHP version" src="https://img.shields.io/badge/php-%5E7.4-lightblue.svg"/>	
+	    <img alt="PHP version" src="https://img.shields.io/badge/php-%5E7.2.5-lightblue.svg"/>	
     </a>
     <a href="https://twitter.com/intent/follow?screen_name=Protoqol_XYZ">
         <img src="https://img.shields.io/twitter/follow/Protoqol_XYZ.svg?label=%40Protoqol_XYZ&style=social"
@@ -19,7 +19,7 @@
 
 ---
 
-#### Quark, give me the tl;dr.
+#### TL;DR.
 
 Quark is an easy-to-use flat-file database, meaning, a database that exists entirely inside a single file. In Quark's
 case, it uses a minified JSON file for optimal performance and speed. Quark includes a simple yet powerful Query Builder
@@ -43,6 +43,8 @@ $ ./vendor/protoqol/quark/bin/quark install
 
 This will create a file called `quark` in your root directory, with this you no longer have to reference the entire path
 to use Quark. You can just use `./quark`.
+
+> Note: using `./` simply indicates that this script needs to be executed according to its contents, meaning, you can also use `php quark` to execute it as a php script.
 
 Besides creating an easy access point to Quark, this command will also generate a config file
 called `.quark-env-example` in your root directory. Here you can tweak your Quark configuration.
@@ -100,7 +102,7 @@ Everywhere.
 <a name="secure"/>
 
 As secure as any other file in your root directory. Without access to the filesystem there is no access possible to the
-database.
+database. So Quark is as secure as you need it to be, but keep in mind, the *.qrk files need write & read access.
 
 **Be warned, I strongly discourage using Quark to store sensitive data, and I will not take any responsibility for any
 harm that is caused by or due to Quark.**

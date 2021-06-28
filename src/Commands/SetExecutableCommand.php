@@ -39,7 +39,7 @@ class SetExecutableCommand extends Command
         if ($res) {
             $output->writeln([
                 ' ',
-                'Your Quark executable is ready! You can now run ./quark to execute commands!',
+                'Your Quark executable is ready! You can now run `./quark` (or `php quark`) to execute commands!',
                 ' ',
             ]);
 

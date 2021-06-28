@@ -2,7 +2,7 @@
 
 namespace Protoqol\Quark\Commands;
 
-use Protoqol\Quark\Database\Migration;
+use Protoqol\Quark\Database\Migrations;
 use Protoqol\Quark\Quark;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -36,18 +36,20 @@ class GenerateMigrationCommand extends Command
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return void
-     * @throws Exception
+     * @return int
+     * @throws \Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $tableName = $input->getArgument('name');
 
-        $migration = (new Migration)->generateMigrationFile($tableName);
+        $migration = (new Migrations)->generate($tableName);
 
         $msg = $migration ? "Successfully created migration for " . $tableName : "An unexpected error occurred.";
 
-        $output->writeln(Quark::styleWriteLn($msg));
+        $output->writeln(stylisedWriteLnOutput($msg));
+
+        return 1;
     }
 
 }
