@@ -2,8 +2,10 @@
 
 namespace Protoqol\Quark\Database;
 
-use Protoqol\Quark\Helpers\Str;
-use Protoqol\Quark\IO\Reader;
+use Carbon\Carbon;
+use Protoqol\Quark\Traits\CanReadData;
+use Protoqol\Quark\Traits\CanWriteData;
+use Protoqol\Quark\Traits\ModelResolver;
 use Protoqol\Quark\Traits\QCollector;
 
 /**
@@ -13,12 +15,12 @@ use Protoqol\Quark\Traits\QCollector;
  */
 abstract class QModel
 {
-    use QCollector;
+    use QCollector, ModelResolver, CanReadData, CanWriteData;
 
     /**
      * @var array
      */
-    protected $attributes;
+    public $attributes;
 
     /**
      * @var
@@ -26,9 +28,9 @@ abstract class QModel
     public $table;
 
     /**
-     * @var Reader
+     * @var array
      */
-    private $reader;
+    private $backup;
 
     /**
      * QModel constructor.
@@ -38,12 +40,35 @@ abstract class QModel
     public function __construct(array $attributes = [])
     {
         $this->attributes = $attributes;
+        $this->backup = $attributes;
 
         if (!$this->table) {
             $this->table = $this->resolveTableName();
         }
 
-        $this->reader = new Reader();
+        $this->read();
+    }
+
+    /**
+     * Flatten columns.
+     *
+     * @param array $columns
+     *
+     * @return array
+     */
+    private function flattenColumns(array $columns): array
+    {
+        $meta = [];
+        array_walk($columns, static function ($key) use (&$meta) {
+            foreach ($key as $columnName => $columnType) {
+                $meta[] = [
+                    'name' => $columnName,
+                    'type' => $columnType
+                ];
+            }
+        });
+
+        return $meta;
     }
 
     /**
@@ -53,11 +78,11 @@ abstract class QModel
      *
      * @return QCollection
      */
-    public function get(array $columns = ['*']): QCollection
+    public static function get(array $columns = ['*']): QCollection
     {
-        $data = $this->reader->readData($this->table);
+        $model = new static;
 
-        return $this->toQCollection($data['__'], $data['__meta'], $columns);
+        return self::toQCollection($model->data, $model->meta_data, $columns);
     }
 
     /**
@@ -67,15 +92,33 @@ abstract class QModel
      *
      * @return $this
      */
-    public function first(array $columns = ['*']): QModel
+    public static function first(array $columns = ['*']): QModel
     {
-        $data = $this->reader->readData($this->table);
+        $model = new static;
 
-        $collection = $this->toQCollection($data['__'], $data['__meta'], $columns);
+        $collection = self::toQCollection($model->data[0], $model->meta_data, $columns);
 
-        $this->attributes = $collection->first();
+        $model->attributes = $collection->first();
 
-        return new static($collection->first());
+        return $collection->first();
+    }
+
+    /**
+     * Get last record from model.
+     *
+     * @param array|string[] $columns
+     *
+     * @return $this
+     */
+    public static function last(array $columns = ['*']): QModel
+    {
+        $model = new static;
+
+        $collection = self::toQCollection($model->data[count($model->data) - 1], $model->meta_data, $columns);
+
+        $model->attributes = $collection->last();
+
+        return $collection->last();
     }
 
     /**
@@ -83,36 +126,94 @@ abstract class QModel
      *
      * @return $this
      */
-    public function where(string $key, string $operator, string $value): QModel
+    public static function where(string $key, string $operator, string $value): QModel
     {
-        return $this;
-    }
-
-    public function create()
-    {
-
-    }
-
-    public function update()
-    {
-
-    }
-
-    public function delete()
-    {
-
+        return new static;
     }
 
     /**
-     * Resolve table name.
+     * Create new record.
      *
-     * @return string
+     * @param array $attributes
+     *
+     * @return QModel
+     * @throws \Exception
      */
-    private function resolveTableName(): string
+    public static function create(array $attributes): QModel
     {
-        $particles = explode('\\', static::class);
+        $model = new static($attributes);
 
-        return Str::pluralize(strtolower($particles[count($particles) - 1]));
+        return $model->persist();
+    }
+
+    public static function update()
+    {
+        // @TODO implement update functionality.
+    }
+
+    public static function delete()
+    {
+        // @TODO implement delete functionality.
+    }
+
+    /**
+     * Persist data to database.
+     *
+     * @return QModel
+     * @throws \Exception
+     */
+    private function persist(): QModel
+    {
+        $indexedCompleteAttributes = [];
+        $completeAttributes = [];
+
+        $i = 0;
+        array_walk_recursive($this->columns, function ($key) use (&$indexedCompleteAttributes, &$completeAttributes, &$i) {
+            if ($i % 2 === 0) {
+                try {
+                    // Attribute has been given.
+                    $indexedCompleteAttributes[] = $this->attributes[$key];
+                    $completeAttributes[$key] = $this->attributes[$key];
+                } catch (\Exception $e) {
+                    // Attribute needs to be generated.
+
+                    // @TODO refactor.
+                    if ($key === 'id') {
+                        $lastId = $this->last(['id'])->id;
+                        $indexedCompleteAttributes[] = $lastId + 1;
+                        $completeAttributes[$key] = $lastId + 1;
+                    } elseif ($key === 'created_at' || $key === 'updated_at') {
+                        $indexedCompleteAttributes[] = Carbon::now()->unix();
+                        $completeAttributes[$key] = Carbon::now()->unix();
+                    } else {
+                        $indexedCompleteAttributes[] = null;
+                        $completeAttributes[$key] = null;
+                    }
+                }
+            }
+            $i++;
+        });
+
+        $this->attributes = $completeAttributes;
+
+        if ($this->persistAttributes($indexedCompleteAttributes)) {
+            return $this;
+        }
+
+        throw new \Exception('Could not create new record.');
+    }
+
+    /**
+     * Handle dynamic calls to QModel class.
+     *
+     * @param $method
+     * @param $arguments
+     *
+     * @return mixed
+     */
+    public function __call($method, $arguments)
+    {
+        return (new static)->$method(...$arguments);
     }
 
     /**
@@ -137,7 +238,7 @@ abstract class QModel
      */
     private function getProperty(string $property)
     {
-        return $this->attributes[$property] ?: null;
+        return $this->attributes[$property] ?? null;
     }
 
     /**
@@ -195,6 +296,6 @@ abstract class QModel
      */
     public function __toString(): string
     {
-        return 'toString';
+        return json_encode($this->attributes);
     }
 }

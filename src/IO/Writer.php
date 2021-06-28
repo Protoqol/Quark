@@ -5,9 +5,23 @@ namespace Protoqol\Quark\IO;
 
 
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
+use Symfony\Component\Filesystem\Filesystem;
 
 class Writer
 {
+    /**
+     * @var Filesystem
+     */
+    private $fs;
+
+    /**
+     * Writer constructor.
+     */
+    public function __construct()
+    {
+        $this->fs = new Filesystem();
+    }
+
     /**
      * @param $name
      * @param $arguments
@@ -28,7 +42,7 @@ class Writer
      */
     public function write(string $absolutePath, $data, bool $json_encoded = false)
     {
-        if (quark()->fs->exists($absolutePath)) {
+        if ($this->fs->exists($absolutePath)) {
 
             $data = $json_encoded ? json_encode($data) : $data;
 

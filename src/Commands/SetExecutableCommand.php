@@ -2,7 +2,6 @@
 
 namespace Protoqol\Quark\Commands;
 
-use Protoqol\Quark\Quark;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -34,7 +33,26 @@ class SetExecutableCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): bool
     {
-        $res = (new Quark($GLOBALS['ROOT_DIR']))->setExecutable();
+        $res = false;
+
+        $dev_origin = $GLOBALS['ROOT_DIR'] . '/bin/quark';
+
+        $origin = $GLOBALS['ROOT_DIR'] . '/vendor/protoqol/quark/bin/quark';
+        $target = $GLOBALS['ROOT_DIR'] . '/quark';
+
+        if (quark()->fs->exists($origin)) {
+            quark()->fs->copy($origin, $target, true);
+            quark()->fs->chmod($target, 0755);
+
+            $res = (bool)quark()->exists($target);
+        }
+
+        if (quark()->fs->exists($dev_origin)) {
+            quark()->fs->copy($dev_origin, $target, true);
+            quark()->fs->chmod($target, 0755);
+
+            $res = (bool)quark()->fs->exists($target);
+        }
 
         if ($res) {
             $output->writeln([

@@ -2,9 +2,7 @@
 
 namespace Protoqol\Quark;
 
-use Protoqol\Quark\Connection\DatabaseAccessor;
 use Protoqol\Quark\IO\Reader;
-use Protoqol\Quark\IO\Table;
 use Protoqol\Quark\IO\Writer;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -13,11 +11,6 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class Quark
 {
-    /**
-     * Field name for meta data
-     */
-    public const META_ACCESSOR = '__';
-
     /**
      * FileSystem instance
      *
@@ -99,71 +92,6 @@ class Quark
         }
 
         return true;
-    }
-
-    /**
-     * @param string|null $customFile
-     *
-     * @return DatabaseAccessor
-     */
-    public function connection(string $customFile = NULL): DatabaseAccessor
-    {
-        return (new DatabaseAccessor($customFile));
-    }
-
-    /**
-     * Set a Quark executable in root directory.
-     *
-     * @return bool
-     */
-    public function setExecutable(): bool
-    {
-        $dev_origin = $this->cwd . '/bin/quark';
-
-        $origin = $this->cwd . '/vendor/protoqol/quark/bin/quark';
-        $target = $this->cwd . '/quark';
-
-        if ($this->fs->exists($origin)) {
-            $this->fs->copy($origin, $target, true);
-            $this->fs->chmod($target, 0755);
-
-            return $this->fs->exists($target);
-        }
-
-        if ($this->fs->exists($dev_origin)) {
-            $this->fs->copy($dev_origin, $target, true);
-            $this->fs->chmod($target, 0755);
-
-            return $this->fs->exists($target);
-        }
-
-        return false;
-    }
-
-    /**
-     * Initialise database file in configured directory.
-     *
-     * @param string|null $table
-     *
-     * @return bool|string
-     */
-    public function createDatabase(?string $table = '')
-    {
-        #$file = $this->createResidingDatabaseDirectory() . $this->defaultFileName;
-        $this->fs->touch($file);
-
-        // If table name is specified, create table in database.
-        $tableMsg = '';
-        if ($table && $table !== '') {
-            $this->fs->appendToFile($file, (new Table())->generateTable($table));
-            $tableMsg = " with table '{$table}'";
-        }
-
-        if ($this->fs->exists($file)) {
-            return "New database" . $tableMsg . " created at: " . $this->cwd . '/' . $file;
-        }
-
-        return false;
     }
 
     /**
