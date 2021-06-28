@@ -18,7 +18,7 @@ class Query implements QueryInterface
     /**
      * @var DatabaseAccessor
      */
-    public DatabaseAccessor $connection;
+    public $connection;
 
     /**
      * Hold database data
@@ -42,17 +42,17 @@ class Query implements QueryInterface
     /**
      * @var string $table
      */
-    public string $table;
+    public $table;
 
     /**
      * @var QuarkPrefetch
      */
-    private QuarkPrefetch $prefetch;
+    private $prefetch;
 
     /**
      * @var int
      */
-    private int $limit;
+    private $limit;
 
     /**
      * Query constructor. Establish connection with database file.

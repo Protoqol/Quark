@@ -29,7 +29,10 @@ use Protoqol\Quark\Commands\SetExecutableCommand;
 use Protoqol\Quark\Quark;
 use Symfony\Component\Console\Application;
 
+// Assumes this file resides in the project's root directory.
 $GLOBALS['ROOT_DIR'] = getcwd();
+
+// Singleton of the Quark class.
 $GLOBALS['QUARK'] = (new Quark($GLOBALS['ROOT_DIR']));
 
 /**

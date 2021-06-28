@@ -5,9 +5,20 @@ namespace Protoqol\Quark\IO;
 
 
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
+use Symfony\Component\Filesystem\Filesystem;
 
 class Reader
 {
+    /**
+     * @var Filesystem
+     */
+    private $fs;
+
+    public function __construct()
+    {
+        $this->fs = new Filesystem();
+    }
+
     /**
      * @param $name
      * @param $arguments
@@ -20,6 +31,8 @@ class Reader
     }
 
     /**
+     * Get file output (read or execute).
+     *
      * @param string $absolutePath
      * @param bool   $resulting If the file is a PHP script this parameter will return the output instead of the content.
      * @param bool   $json_decode
@@ -28,7 +41,7 @@ class Reader
      */
     public function read(string $absolutePath, bool $resulting = false, bool $json_decode = false)
     {
-        if (quark()->fs->exists($absolutePath)) {
+        if ($this->fs->exists($absolutePath)) {
 
             if (!$resulting) {
                 $output = file_get_contents($absolutePath);
@@ -44,5 +57,26 @@ class Reader
         }
 
         throw new FileNotFoundException('File at "' . $absolutePath . '" does not exist.');
+    }
+
+    /**
+     * Read table data.
+     *
+     * @param string $table
+     *
+     * @return array
+     */
+    public function readData(string $table): array
+    {
+        // @TODO refactor, this is a temporary workaround.
+        $tmp = getcwd() . "/../database/quark/tables/" . $table . '.qrk';
+
+        if ($this->fs->exists($tmp)) {
+
+            // @TODO refactor to json-machine
+            return json_decode(file_get_contents($tmp), true);
+        }
+
+        throw new FileNotFoundException('File at "' . $tmp . '" does not exist.');
     }
 }
