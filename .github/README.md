@@ -12,6 +12,10 @@
     </a>
 </p>
 
+### This is still in a very early alpha stage.
+
+---
+
 ### If you are in need of a quick, easy-to-use, sub-atomic database, Quark is for you!
 
 ---
@@ -43,21 +47,89 @@ to use Quark. You can just use `./quark`.
 
 > Note: using `./` simply indicates that this script needs to be executed according to its contents, meaning, you can also use `php quark` to execute it as a php script.
 
-Besides creating an easy access point to Quark, this command will also generate a config file
-called `.quark-env-example` in your root directory. Here you can tweak your Quark configuration.
+###### 3. Initialise quark directory structure.
 
-###### 3. Creating your first Quark table.
-
-Creating a table.
+This will generate the needed directory structure for Quark to function.
 
 ```bash
-$ ./quark create table {name}
+$ ./quark init
 ```
 
-###### 4. Enjoy the benefits of Quark
+###### 4. Create a migration.
+
+This will generate a migration file which is used to define a table.
+
+```bash
+$ ./quark create {TableName}
+```
+
+> Migrations can be found in de {root}/quark/migrations directory.
+
+###### 5. Run migrations.
+
+Running this command will migrate all pending migrations to the database.
+
+```bash
+$ ./quark migrate
+```
+
+###### 6. Using the data.
+
+To use the table data, create a class (use singular pascal-cased version of table name as class name) which
+extends `Protoqol\Quark\Database\QModel`.
+> If you want to user a different class name you can overwrite the `public $table` property in your class with the correct table name.
+
+This class will give you a few methods to interact with your data such as:
+
+```php
+
+/**
+ * Returns all available data from table. 
+ * Define what columns you need with the $columns parameter. Example: ['id', 'name'], this only returns 'id' & 'name' columns.
+ * 
+ * @param array $columns string[] Defaults to all columns.
+ * 
+ * @return \Protoqol\Quark\Database\QCollection
+ */
+public function all(array $columns = ['*']): \Protoqol\Quark\Database\QCollection
+
+/**
+ * Returns first entry from table.
+ * Define what columns you need with the $columns parameter. Example: ['id', 'name'], this only returns 'id' & 'name' columns.
+ * 
+ * @param array $columns string[] Defaults to all columns.
+ * 
+ * @return \Protoqol\Quark\Database\QCollection
+ */
+public function first(array $columns = ['*']): \Protoqol\Quark\Database\QCollection
+
+/**
+ * Returns last entry from table.
+ * Define what columns you need with the $columns parameter. Example: ['id', 'name'], this only returns 'id' & 'name' columns.
+ * 
+ * @param array $columns string[] Defaults to all columns.
+ * 
+ * @return \Protoqol\Quark\Database\QCollection
+ */
+public function last(array $columns = ['*']): \Protoqol\Quark\Database\QCollection
+
+/**
+ * Creates a new record in your table. Define values in $attributes parameter.
+ * Example: self::create(['name' => 'Cool Name', 'is_active' => true])
+ *
+ * @param array $attributes 
+ *                         
+ * @return \Protoqol\Quark\Database\QModel
+ */
+public function create(array $attributes): \Protoqol\Quark\Database\QModel
+
+```
+
+> These methods can provide a very basic database interaction but are very limited, while Quark is being developed more features will be implemented.
+
+###### 6. Enjoy.
 
 For the complete documentation refer to: __{$LINK_HERE}__
-
 
 ---
 
