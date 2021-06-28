@@ -77,7 +77,7 @@ $ ./quark migrate
 
 To use the table data, create a class (use singular pascal-cased version of table name as class name) which
 extends `Protoqol\Quark\Database\QModel`.
-> If you want to user a different class name you can overwrite the `public $table` property in your class with the correct table name.
+> If you want to use a different class name you can overwrite the `public $table` property in your class with the correct table name.
 
 This class will give you a few methods to interact with your data such as:
 
