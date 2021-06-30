@@ -36,7 +36,7 @@ abstract class QModel
      * QModel constructor.
      *
      * @param array $attributes
-     * @param bool  $fresh This parameter controls whether or not the data should be retrieved or not.
+     * @param bool  $fresh      This parameter controls whether or not the data should be retrieved or not.
      */
     public function __construct(array $attributes = [], bool $fresh = false)
     {
@@ -184,31 +184,33 @@ abstract class QModel
         $completeAttributes = [];
 
         $i = 0;
-        array_walk_recursive($this->columns, function ($key) use (&$indexedCompleteAttributes, &$completeAttributes, &$i) {
-            if ($i % 2 === 0) {
-                try {
-                    // Attribute has been given.
-                    $indexedCompleteAttributes[] = $this->attributes[$key];
-                    $completeAttributes[$key] = $this->attributes[$key];
-                } catch (\Exception $e) {
-                    // Attribute needs to be generated.
+        array_walk_recursive(
+            $this->columns, function ($key) use (&$indexedCompleteAttributes, &$completeAttributes, &$i) {
+                if ($i % 2 === 0) {
+                    try {
+                        // Attribute has been given.
+                        $indexedCompleteAttributes[] = $this->attributes[$key];
+                        $completeAttributes[$key] = $this->attributes[$key];
+                    } catch (\Exception $e) {
+                        // Attribute needs to be generated.
 
-                    // @TODO refactor.
-                    if ($key === 'id') {
-                        $lastId = $this->last(['id'])->id;
-                        $indexedCompleteAttributes[] = $lastId + 1;
-                        $completeAttributes[$key] = $lastId + 1;
-                    } elseif ($key === 'created_at' || $key === 'updated_at') {
-                        $indexedCompleteAttributes[] = Carbon::now()->unix();
-                        $completeAttributes[$key] = Carbon::now()->unix();
-                    } else {
-                        $indexedCompleteAttributes[] = null;
-                        $completeAttributes[$key] = null;
+                        // @TODO refactor.
+                        if ($key === 'id') {
+                            $lastId = $this->last(['id'])->id;
+                            $indexedCompleteAttributes[] = $lastId + 1;
+                            $completeAttributes[$key] = $lastId + 1;
+                        } elseif ($key === 'created_at' || $key === 'updated_at') {
+                            $indexedCompleteAttributes[] = Carbon::now()->unix();
+                            $completeAttributes[$key] = Carbon::now()->unix();
+                        } else {
+                            $indexedCompleteAttributes[] = null;
+                            $completeAttributes[$key] = null;
+                        }
                     }
                 }
+                $i++;
             }
-            $i++;
-        });
+        );
 
         $this->attributes = $completeAttributes;
 

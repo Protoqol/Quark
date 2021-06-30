@@ -1,61 +1,66 @@
 #!/usr/bin/env php
 <?php
 
-$dir = __DIR__ . '/..';
+################
+# Resolve autoloader.
+################
+$dir = __DIR__ . DIRECTORY_SEPARATOR . '..';
 
-if (!file_exists($dir . '/autoload.php')) {
-    $dir = __DIR__ . '/../vendor';
+if (!file_exists($dir . DIRECTORY_SEPARATOR . 'autoload.php')) {
+    $dir = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'vendor';
 }
 
 if (!file_exists($dir . '/autoload.php')) {
-    $dir = './vendor';
+    $dir = '.' . DIRECTORY_SEPARATOR . 'vendor';
 }
 
-if (!file_exists($dir . '/autoload.php')) {
-    $dir = __DIR__ . '/../../..';
+if (!file_exists($dir . DIRECTORY_SEPARATOR . 'autoload.php')) {
+    $dir = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..';
 }
 
-if (!file_exists($dir . '/autoload.php')) {
+if (!file_exists($dir . DIRECTORY_SEPARATOR . 'autoload.php')) {
     echo 'Autoload.php not found.';
-    exit(1);
+    die();
 }
 
-require_once $dir . '/autoload.php';
+require_once $dir . DIRECTORY_SEPARATOR . 'autoload.php';
 
-use Protoqol\Quark\Commands\GenerateMigrationCommand;
-use Protoqol\Quark\Commands\InstallQuarkCommand;
-use Protoqol\Quark\Commands\RunMigrationsCommand;
-use Protoqol\Quark\Commands\SetExecutableCommand;
-use Protoqol\Quark\Quark;
-use Symfony\Component\Console\Application;
+##############################
+# Code starts here.          #
+##############################
 
-// Assumes this file resides in the project's root directory.
-$GLOBALS['ROOT_DIR'] = getcwd();
+###################
+# Assumes this file resides in the project's root directory.
+###################
+$GLOBALS['QUARK'] = new Protoqol\Quark\Quark;
 
-// Singleton of the Quark class.
-$GLOBALS['QUARK'] = (new Quark($GLOBALS['ROOT_DIR']));
+###################
+# Create application.
+###################
+$app = new Symfony\Component\Console\Application("Quark 0.0.0-alpha - Protoqol");
 
-/**
- * Get Quark instance.
- *
- * @TODO Move separate helpers file.
- *
- * @return Quark
- */
-function quark(): Quark
-{
-    return $GLOBALS['QUARK'] ?: (new Quark($GLOBALS['ROOT_DIR']));
-}
-
-$app = new Application('<href=https://github.com/QuintenJustus/QuarkDev><options=bold,reverse,underscore>Quark Database</></></>');
-
+##################
+# Register commands.
+##################
 $app->addCommands([
-    (new SetExecutableCommand()),
-    (new GenerateMigrationCommand()),
-    (new RunMigrationsCommand()),
-    (new InstallQuarkCommand())
+    (new Protoqol\Quark\Commands\SetExecutableCommand()),
+    (new Protoqol\Quark\Commands\GenerateMigrationCommand()),
+    (new Protoqol\Quark\Commands\RunMigrationsCommand()),
+    (new Protoqol\Quark\Commands\CreateDirectoryStructureCommand())
 ]);
 
-$app->run();
+################
+# Take it away, Quark!
+################
+try {
+    $app->run();
+} catch (Exception $e) {
+
+    ################
+    # Or don't!
+    ################
+    echo 'Could not start Quark. Reason unknown.';
+    die();
+}
 
 ?>

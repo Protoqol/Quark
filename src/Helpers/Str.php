@@ -179,8 +179,9 @@ class Str
 
         // check for matches using regular expressions
         foreach (self::$singular as $pattern => $result) {
-            if (preg_match($pattern, $string))
+            if (preg_match($pattern, $string)) {
                 return preg_replace($pattern, $result, $string);
+            }
         }
 
         return $string;
