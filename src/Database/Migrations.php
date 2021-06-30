@@ -44,7 +44,7 @@ class Migrations
      *
      * @param bool $dryRun
      */
-    public function __construct(bool $dryRun)
+    public function __construct(bool $dryRun = false)
     {
         $this->dryRun = $dryRun;
 
@@ -59,7 +59,6 @@ class Migrations
         $this->pendingMigrations = $this->getPending();
 
         $this->latestMigration = $this->getLatestMigratedFile();
-
     }
 
     /**
@@ -145,7 +144,6 @@ class Migrations
             }
 
             throw new Exception('Could not fill content for migration.');
-
         } catch (Exception $exception) {
             throw new Exception('Could not generate migration.');
         }
@@ -253,7 +251,7 @@ class Migrations
     }
 
     /**
-     * Keep track of migration in meta/__migrations.qrk.
+     * Keep track of migration in _meta/__migrations.qrk.
      *
      * @param string $filename
      *

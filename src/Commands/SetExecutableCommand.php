@@ -20,7 +20,6 @@ class SetExecutableCommand extends Command
      */
     protected function configure(): void
     {
-        $this->setAliases(['quark:install']);
         $this->setDescription('Install a Quark executable in your project\'s root directory.');
         $this->setHelp('This command creates a Quark executable in the project\'s root directory as a convenience.');
     }
@@ -29,44 +28,47 @@ class SetExecutableCommand extends Command
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return bool
+     * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output): bool
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $res = false;
+        try {
+            $res = false;
 
-        $dev_origin = $GLOBALS['ROOT_DIR'] . '/bin/quark';
+            $dev_origin = quark()->cwd . '/bin/quark';
 
-        $origin = $GLOBALS['ROOT_DIR'] . '/vendor/protoqol/quark/bin/quark';
-        $target = $GLOBALS['ROOT_DIR'] . '/quark';
+            $origin = quark()->cwd . '/vendor/protoqol/quark/bin/quark';
+            $target = quark()->cwd . '/quark';
 
-        if (quark()->fs->exists($origin)) {
-            quark()->fs->copy($origin, $target, true);
-            quark()->fs->chmod($target, 0755);
+            // Copy .quark-env-example to root.
 
-            $res = (bool)quark()->exists($target);
+            if (quark()->fs->exists($origin)) {
+                quark()->fs->copy($origin, $target, true);
+                quark()->fs->chmod($target, 0755);
+
+                $res = quark()->fs->exists($target);
+            }
+
+            if (quark()->fs->exists($dev_origin)) {
+                quark()->fs->copy($dev_origin, $target, true);
+                quark()->fs->chmod($target, 0755);
+
+                $res = quark()->fs->exists($target);
+            }
+
+            if ($res) {
+                $output->writeln(
+                    stylisedWriteLnOutput("Your Quark executable is ready! You can now run `./quark` (or `php quark`) to interact with Quark!")
+                );
+
+                return 1;
+            }
+
+            return 0;
+        } catch (\Exception $e) {
+            $output->writeln('Something went wrong while trying to set the Quark executable...');
+
+            return 0;
         }
-
-        if (quark()->fs->exists($dev_origin)) {
-            quark()->fs->copy($dev_origin, $target, true);
-            quark()->fs->chmod($target, 0755);
-
-            $res = (bool)quark()->fs->exists($target);
-        }
-
-        if ($res) {
-            $output->writeln([
-                ' ',
-                'Your Quark executable is ready! You can now run `./quark` (or `php quark`) to execute commands!',
-                ' ',
-            ]);
-
-            return true;
-        }
-
-        $output->writeln('Something went wrong while trying to set the Quark executable...');
-
-        return true;
-
     }
 }

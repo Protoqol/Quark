@@ -3,7 +3,6 @@
 
 namespace Protoqol\Quark\Traits;
 
-
 use Protoqol\Quark\IO\Reader;
 
 trait CanReadData

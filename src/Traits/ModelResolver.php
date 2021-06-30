@@ -3,7 +3,6 @@
 
 namespace Protoqol\Quark\Traits;
 
-
 use Protoqol\Quark\Helpers\Str;
 
 trait ModelResolver
