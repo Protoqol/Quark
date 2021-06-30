@@ -2,7 +2,15 @@
     <img alt="Quark" src="./assets/quarkFull.png"/>
 </div>
 
+---
+
 <p align="center">
+    <a href="https://packagist.org/packages/protoqol/quark">
+	    <img alt="Latest stable version" src="http://poser.pugx.org/protoqol/quark/v"/>	
+    </a>
+    <a href="https://packagist.org/packages/protoqol/quark">
+	    <img alt="Latest version" src="http://poser.pugx.org/protoqol/quark/v/unstable"/>	
+    </a>
     <a href="https://packagist.org/packages/protoqol/quark">
 	    <img alt="PHP version" src="https://img.shields.io/badge/php-%5E7.2.5-lightblue.svg"/>	
     </a>
@@ -11,8 +19,6 @@
             alt="Follow Protoqol on Twitter">
     </a>
 </p>
-
-### This is still in a very early alpha stage.
 
 ---
 
