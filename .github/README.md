@@ -1,5 +1,5 @@
 <div>
-    <img alt="Quark" src="./assets/qrk-social-preview.jpg"/>
+    <img alt="Quark" src="./assets/qrk-promo.jpg"/>
 </div>
 
 ---
