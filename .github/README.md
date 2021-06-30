@@ -1,5 +1,5 @@
 <div>
-    <img alt="Quark" src="./assets/quarkFull.png"/>
+    <img alt="Quark" src="./assets/qrk-social-preview.jpg"/>
 </div>
 
 <p align="center">
