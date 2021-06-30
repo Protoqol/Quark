@@ -13,7 +13,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-
+    
+    - name: Setup PHP Action
+      uses: shivammathur/setup-php@2.11.0
+      with:
+        php-version: 7.2.5
+        extensions: json, xml
+    
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
 
