@@ -3,7 +3,6 @@
 namespace Protoqol\Quark\Commands;
 
 use Protoqol\Quark\Database\Migrations;
-use Protoqol\Quark\Quark;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,13 +22,9 @@ class GenerateMigrationCommand extends Command
      */
     protected function configure(): void
     {
-        $this->setDescription('Create a new Quark migration.')
-            ->setHelp('./quark create migration {table_name}')
-            ->addArgument(
-                'name',
-                InputArgument::REQUIRED,
-                'Table name'
-            );
+        $this->setDescription('Create a new Quark migration.');
+        $this->setHelp('php quark create {TableName}');
+        $this->addArgument('name', InputArgument::REQUIRED, 'TableName');
     }
 
     /**
@@ -51,5 +46,4 @@ class GenerateMigrationCommand extends Command
 
         return 1;
     }
-
 }

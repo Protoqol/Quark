@@ -2,6 +2,7 @@
 
 namespace Protoqol\Quark;
 
+use Dotenv\Dotenv;
 use Protoqol\Quark\IO\Reader;
 use Protoqol\Quark\IO\Writer;
 use Symfony\Component\Filesystem\Filesystem;
@@ -21,6 +22,8 @@ class Quark
     /**
      * Current working directory
      *
+     * @TODO refactor to getCwd() method.
+     *
      * @var string $cwd
      */
     public $cwd;
@@ -28,24 +31,30 @@ class Quark
     /**
      * @var Reader
      */
-    public $reader;
+    protected $reader;
 
     /**
      * @var Writer
      */
-    public $writer;
+    protected $writer;
 
     /**
      * Quark constructor.
      *
      * @param string|null $cwd
      */
-    public function __construct(string $cwd = NULL)
+    public function __construct(string $cwd = null)
     {
-        $this->fs = new Filesystem();
-        $this->writer = new Writer();
-        $this->reader = new Reader();
-        $this->cwd = $cwd ?? $GLOBALS['ROOT_DIR'];
+        $this->fs = new Filesystem;
+        $this->writer = new Writer;
+        $this->reader = new Reader;
+
+        // If called from CLI the cwd can be assumed to be the root directory.
+        $this->cwd = $cwd ?: getcwd();
+        // $this->cwd = $cwd ?? (defined('STDIN') ? getcwd() : $this->getMetaKey('root_dir'));
+        // $this->env = Dotenv::createImmutable(getcwd() . DIRECTORY_SEPARATOR, 'quark-env');
+        // $this->env->load();
+        // dd($_ENV['QUARK_DIRECTORY']);
     }
 
     /**
@@ -53,13 +62,13 @@ class Quark
      *
      * @param string $absolutePath
      * @param mixed  $data
-     * @param bool   $json_encoded
+     * @param bool   $json_encode
      *
-     * @return false|int
+     * @return bool
      */
-    public function write(string $absolutePath, $data, bool $json_encoded = false)
+    public function write(string $absolutePath, $data, bool $json_encode = false): bool
     {
-        return $this->writer->write($absolutePath, $data, $json_encoded);
+        return (bool)$this->writer->write($absolutePath, $data, $json_encode);
     }
 
     /**
@@ -67,7 +76,7 @@ class Quark
      *
      * @param string $absolutePath
      * @param bool   $json_decode
-     * @param bool   $resulting If the file is a PHP script this parameter will return the output instead of the content.
+     * @param bool   $resulting    If the file is a PHP script this parameter will return the output instead of the content.
      *
      * @return string|array
      */
@@ -86,7 +95,7 @@ class Quark
     public function createIfAbsent(string $absolutePath): bool
     {
         if (!$this->fs->exists($absolutePath)) {
-            $this->fs->touch($absolutePath);
+            $this->fs->appendToFile($absolutePath, null);
 
             $this->createIfAbsent($absolutePath);
         }
@@ -103,7 +112,8 @@ class Quark
      */
     public function rootPath(string $path = null): string
     {
-        return $GLOBALS['ROOT_DIR'] . $this->formatPath($path) ?: '';
+        // return $this->getMetaKey('root_dir', $this->cwd) . $this->formatPath($path) ?: '';
+        return '/database/quark/' . $this->formatPath($path) ?: '';
     }
 
     /**
@@ -115,7 +125,7 @@ class Quark
      */
     public function quarkPath(string $path = null): string
     {
-        return $this->rootPath(env('QUARK_DIRECTORY', '/database/quark/') . $this->formatPath($path) ?: '');
+        return $this->rootPath('/database/quark/' . ($this->formatPath($path) ?: ''));
     }
 
     /**
@@ -127,7 +137,7 @@ class Quark
      */
     public function tablesPath(string $path = null): string
     {
-        return $this->quarkPath() . 'tables' . $this->formatPath($path) ?: '';
+        return $this->quarkPath() . 'tables' . ($this->formatPath($path) ?: '');
     }
 
     /**
@@ -139,7 +149,7 @@ class Quark
      */
     public function migrationsPath(string $path = null): string
     {
-        return $this->quarkPath() . 'migrations' . $this->formatPath($path) ?: '';
+        return $this->quarkPath() . 'migrations' . ($this->formatPath($path) ?: '');
     }
 
     /**
@@ -151,11 +161,62 @@ class Quark
      */
     public function metaPath(string $path = null): string
     {
-        return $this->quarkPath() . '_meta' . $this->formatPath($path) ?: '';
+        return $this->quarkPath() . '_meta' . ($this->formatPath($path) ?: '');
     }
 
     /**
-     * Determine if path needs an addition separator.
+     * Set a key in the internal config file.
+     *
+     * @param string $key
+     * @param $value
+     * @param bool   $overwriteExisting
+     *
+     * @return bool
+     */
+    public function setMetaKey(string $key, $value, bool $overwriteExisting = true): bool
+    {
+        $metaFile = $this->metaPath('internal_config.qrk');
+
+        if ($this->fs->exists($metaFile)) {
+            $internalConfig = $this->read($metaFile, true);
+
+            if ($overwriteExisting) {
+                $internalConfig[$key] = $value;
+            } elseif (!array_key_exists($key, $internalConfig)) {
+                $internalConfig[$key] = $value;
+            }
+
+            $this->write($metaFile, $internalConfig, true);
+        } else {
+            $this->fs->appendToFile($metaFile, json_encode([$key => $value]));
+        }
+
+        return false;
+    }
+
+    /**
+     * Get a key from internal config.
+     *
+     * @param string $key
+     * @param $default
+     *
+     * @return false|mixed|string
+     */
+    public function getMetaKey(string $key, $default = null)
+    {
+        $metaFile = $this->metaPath('internal_config.qrk');
+
+        if ($this->fs->exists($metaFile)) {
+            $internalConfig = $this->read($metaFile, true);
+
+            return array_key_exists($key, $internalConfig) ? $internalConfig[$key] : $default;
+        }
+
+        return $default;
+    }
+
+    /**
+     * Determine if path needs an additional separator.
      *
      * @param string|null $path
      *

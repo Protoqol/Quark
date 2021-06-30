@@ -23,9 +23,9 @@ class RunMigrationsCommand extends Command
      */
     protected function configure(): void
     {
-        $this->setDescription('Run Quark migrations.')
-            ->addOption('dry-run', null, InputOption::VALUE_OPTIONAL, "Dry run migrations, meaning the migrations will not be persisted to the database.", false)
-            ->setHelp('./quark migrate');
+        $this->setDescription('Run Quark migrations.');
+        $this->addOption('dry-run', 'D', InputOption::VALUE_OPTIONAL, "Dry run migrations, meaning the migrations will not be persisted to the database.", false);
+        $this->setHelp('php quark migrate');
     }
 
     /**
@@ -40,20 +40,32 @@ class RunMigrationsCommand extends Command
         $migrations = new Migrations($input->getOption('dry-run'));
 
         if (!$migrations->pendingMigrations) {
-            $output->writeln("<options=bold;fg=green>There are no pending migrations!</>");
+            $output->writeln(
+                stylisedWriteLnOutput("There are no pending migrations!")
+            );
+
             $time = Carbon::parse($migrations->latestMigration['migrated_at'])->format('m-d-Y H:i:s');
-            $output->writeln("<options=bold;fg=yellow>Latest migration was \"{$migrations->latestMigration['name']}\" on {$time}</>");
+
+            $output->writeln(
+                stylisedWriteLnOutput("Latest migration was \"{$migrations->latestMigration['name']}\" on {$time}", 'yellow')
+            );
 
             return 1;
         }
 
-        $output->writeln("<options=bold;fg=green>Migrating " . $migrations->pendingMigrations . " migrations</>");
+        $output->writeln(
+            stylisedWriteLnOutput("Migrating {$migrations->pendingMigrations} migrations")
+        );
 
         foreach ($migrations->run() as $value) {
-            $output->writeln("<options=bold;fg=yellow;>- Generating table for " . $value . ($input->getOption('dry-run') ? " - (dry)" : '') . "</>");
+            $output->writeln(
+                stylisedWriteLnOutput("- Generating table for {$value}" . ($input->getOption('dry-run') ? " - (dry)" : ''), 'yellow')
+            );
         }
 
-        $output->writeln("<options=bold;fg=green;>Successfully processed all migrations.</>");
+        $output->writeln(
+            stylisedWriteLnOutput("Successfully processed all migrations.")
+        );
 
         return 1;
     }

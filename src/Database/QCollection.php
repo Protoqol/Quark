@@ -17,9 +17,11 @@ class QCollection
      */
     public function __construct(array $data, string $classCast)
     {
-        $this->items = array_map(static function ($row) use ($classCast) {
-            return new $classCast($row, true);
-        }, $data);
+        $this->items = array_map(
+            static function ($row) use ($classCast) {
+                return new $classCast($row, true);
+            }, $data
+        );
     }
 
     /**
@@ -64,8 +66,10 @@ class QCollection
      */
     private function __toArray(): array
     {
-        return array_map(static function ($item) {
-            return (array)$item->attributes;
-        }, $this->items);
+        return array_map(
+            static function ($item) {
+                return (array)$item->attributes;
+            }, $this->items
+        );
     }
 }
