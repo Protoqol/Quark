@@ -2,7 +2,15 @@
     <img alt="Quark" src="./assets/qrk-social-preview.jpg"/>
 </div>
 
+---
+
 <p align="center">
+    <a href="https://packagist.org/packages/protoqol/quark">
+	    <img alt="Latest stable version" src="http://poser.pugx.org/protoqol/quark/v"/>	
+    </a>
+    <a href="https://packagist.org/packages/protoqol/quark">
+	    <img alt="Latest version" src="http://poser.pugx.org/protoqol/quark/v/unstable"/>	
+    </a>
     <a href="https://packagist.org/packages/protoqol/quark">
 	    <img alt="PHP version" src="https://img.shields.io/badge/php-%5E7.2.5-lightblue.svg"/>	
     </a>
@@ -11,8 +19,6 @@
             alt="Follow Protoqol on Twitter">
     </a>
 </p>
-
-### This is still in a very early alpha stage.
 
 ---
 
@@ -77,7 +83,7 @@ $ ./quark migrate
 
 To use the table data, create a class (use singular pascal-cased version of table name as class name) which
 extends `Protoqol\Quark\Database\QModel`.
-> If you want to user a different class name you can overwrite the `public $table` property in your class with the correct table name.
+> If you want to use a different class name you can overwrite the `public $table` property in your class with the correct table name.
 
 This class will give you a few methods to interact with your data such as:
 
