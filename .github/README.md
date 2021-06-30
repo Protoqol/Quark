@@ -21,7 +21,7 @@
 </p>
 
 ---
-There is no release for Quark as of yet, earliest version is the highly unstable v0.0.0-alpha.
+> There is no release for Quark as of yet, the current version is the highly unstable v0.0.0-alpha.
 ---
 
 ### If you are in need of a quick, easy-to-use, sub-atomic database, Quark is for you!
