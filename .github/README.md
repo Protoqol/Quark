@@ -188,7 +188,7 @@ harm that is caused by or due to Quark.**
 
 <a name="contributors"/>
 
-- [Quinten Schorsij](https://github.com/QuintenJustus)
+- [Quinten Justus](https://github.com/QuintenJustus)
 
 ## License
 
