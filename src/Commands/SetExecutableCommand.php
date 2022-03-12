@@ -29,9 +29,9 @@ class SetExecutableCommand extends Command
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return bool
+     * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output): bool
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $res = false;
 
@@ -44,14 +44,14 @@ class SetExecutableCommand extends Command
             quark()->fs->copy($origin, $target, true);
             quark()->fs->chmod($target, 0755);
 
-            $res = (bool)quark()->exists($target);
+            $res = (int)quark()->fs->exists($target);
         }
 
         if (quark()->fs->exists($dev_origin)) {
             quark()->fs->copy($dev_origin, $target, true);
             quark()->fs->chmod($target, 0755);
 
-            $res = (bool)quark()->fs->exists($target);
+            $res = (int)quark()->fs->exists($target);
         }
 
         if ($res) {
@@ -61,12 +61,11 @@ class SetExecutableCommand extends Command
                 ' ',
             ]);
 
-            return true;
+            return 1;
         }
 
         $output->writeln('Something went wrong while trying to set the Quark executable...');
 
-        return true;
-
+        return 1;
     }
 }

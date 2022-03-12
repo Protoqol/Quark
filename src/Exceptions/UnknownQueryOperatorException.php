@@ -7,7 +7,7 @@ use Exception;
 /**
  * Class ColumnNotFoundException
  */
-class ColumnNotFoundException extends Exception
+class UnknownQueryOperatorException extends Exception
 {
     //
 }

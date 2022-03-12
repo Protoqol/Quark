@@ -44,7 +44,7 @@ class Migrations
      *
      * @param bool $dryRun
      */
-    public function __construct(bool $dryRun)
+    public function __construct(bool $dryRun = false)
     {
         $this->dryRun = $dryRun;
 

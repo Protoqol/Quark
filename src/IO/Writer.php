@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Protoqol\Quark\IO;
-
 
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Filesystem\Filesystem;
