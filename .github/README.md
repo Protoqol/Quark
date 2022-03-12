@@ -21,6 +21,8 @@
 </p>
 
 ---
+> There is no release for Quark as of yet, the current version is the highly unstable v0.0.0-alpha.
+---
 
 ### If you are in need of a quick, easy-to-use, sub-atomic database, Quark is for you!
 
@@ -186,7 +188,7 @@ harm that is caused by or due to Quark.**
 
 <a name="contributors"/>
 
-- [Quinten Schorsij](https://github.com/QuintenJustus)
+- [Quinten Justus](https://github.com/QuintenJustus)
 
 ## License
 
